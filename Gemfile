@@ -16,6 +16,8 @@ gem 'devise'
 gem 'devise-jwt'
 gem 'pundit'
 
+gem 'rack-cors'
+
 gem 'faker'
 
 group :development, :test do
