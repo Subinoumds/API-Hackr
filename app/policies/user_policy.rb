@@ -35,4 +35,8 @@ class UserPolicy < ApplicationPolicy
   def generate_fake_identity?
     true
   end
+
+  def check_email_existence?
+    true
+  end
 end

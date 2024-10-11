@@ -1,3 +1,5 @@
+require 'resolv'
+
 class Api::V1::UsersController < ApplicationController
   before_action :set_user, only: %i[show edit update destroy]
 
@@ -72,7 +74,29 @@ class Api::V1::UsersController < ApplicationController
     render json: { password: password }
   end
 
+  def check_email_existence
+    email = params[:email]
+
+    if valid_email_format?(email) && domain_exists?(email)
+      render json: { exists: true, message: 'Adresse mail potentiellement valide.' }
+    else
+      render json: { exists: false, message: 'Adresse mail invalide ou domaine inexistant.' }
+    end
+  end
+
   private
+
+  def valid_email_format?(email)
+    /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i.match?(email)
+  end
+
+  def domain_exists?(email)
+    domain = email.split('@').last
+    mx_records = Resolv::DNS.open { |dns| dns.getresources(domain, Resolv::DNS::Resource::IN::MX) }
+    mx_records.any?
+  rescue Resolv::ResolvError
+    false
+  end
 
   def model
     User

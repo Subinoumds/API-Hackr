@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users do
         collection do
-          get :check_email
+          get :check_email_existence
           get :generate_fake_identity
           get :generate_secure_password
         end
