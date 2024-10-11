@@ -9,6 +9,7 @@ Rails.application.routes.draw do
         collection do
           get :check_email
           get :generate_fake_identity
+          get :generate_secure_password
         end
       end
     end

@@ -67,6 +67,11 @@ class Api::V1::UsersController < ApplicationController
     render json: { name: fake_name, email: fake_email }
   end
 
+  def generate_secure_password
+    password = SecureRandom.base64(15)
+    render json: { password: password }
+  end
+
   private
 
   def model
