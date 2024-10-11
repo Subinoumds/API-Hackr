@@ -16,6 +16,8 @@ gem 'devise'
 gem 'devise-jwt'
 gem 'pundit'
 
+gem 'faker'
+
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
 end
