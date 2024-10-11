@@ -1,9 +1,12 @@
 class ApplicationController < ActionController::API
   include Pundit::Authorization
-  include DeviseTokenAuth::Concerns::User
-  include Authenticable
 
-  def log_action(action, feature)
-    ApiLog.create(action: action, user_id: current_user.id, feature: feature)
+  def log_action(action, model)
+    if current_user
+      Rails.logger.info "Action: #{action}, Model: #{model}, User ID: #{current_user.id}"
+    else
+      Rails.logger.warn "Action: #{action}, Model: #{model}, User is not logged in."
+    end
   end
+  
 end

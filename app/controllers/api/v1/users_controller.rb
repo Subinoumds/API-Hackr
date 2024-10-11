@@ -23,9 +23,9 @@ class Api::V1::UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     authorize @user, :create?
-
+  
     if @user.save
-      UserMailer.welcome_email(user).deliver_later
+      UserMailer.welcome_email(@user).deliver_later
       log_action('create', 'User')
       render json: @user, status: :created
     else
