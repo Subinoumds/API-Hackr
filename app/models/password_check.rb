@@ -1,0 +1,2 @@
+class PasswordCheck < ApplicationRecord
+end

@@ -1,0 +1,2 @@
+class EmailCheck < ApplicationRecord
+end

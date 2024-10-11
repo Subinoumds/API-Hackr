@@ -1,0 +1,2 @@
+class DomainCheck < ApplicationRecord
+end

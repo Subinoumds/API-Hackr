@@ -1,0 +1,2 @@
+class ImageRandomizer < ApplicationRecord
+end

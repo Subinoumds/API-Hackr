@@ -1,0 +1,2 @@
+class PasswordGenerator < ApplicationRecord
+end

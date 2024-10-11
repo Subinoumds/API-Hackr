@@ -1,0 +1,2 @@
+class InfoCrawler < ApplicationRecord
+end

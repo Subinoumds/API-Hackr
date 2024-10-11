@@ -1,0 +1,2 @@
+class PhishingPage < ApplicationRecord
+end

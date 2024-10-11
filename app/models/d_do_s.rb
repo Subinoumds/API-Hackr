@@ -1,0 +1,2 @@
+class DDoS < ApplicationRecord
+end
