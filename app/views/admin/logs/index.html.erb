@@ -1,0 +1,23 @@
+<h1>Logs d'Action</h1>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Type d'Action</th>
+      <th>ID de l'Utilisateur</th>
+      <th>Détails</th>
+      <th>Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @logs.each do |log| %>
+      <tr>
+        <td><%= log.id %></td>
+        <td><%= log.action_type %></td>
+        <td><%= log.user_id %></td>
+        <td><%= log.details %></td>
+        <td><%= log.created_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

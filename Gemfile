@@ -15,6 +15,7 @@ gem "bootsnap", require: false
 gem 'devise'
 gem 'devise-jwt'
 gem 'pundit'
+gem 'logger'
 
 gem 'rack-cors'
 

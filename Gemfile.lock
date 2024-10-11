@@ -120,6 +120,7 @@ GEM
       reline (>= 0.4.2)
     jwt (2.9.3)
       base64
+    logger (1.6.1)
     loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -231,6 +232,7 @@ DEPENDENCIES
   devise
   devise-jwt
   faker
+  logger
   pg (~> 1.1)
   puma (>= 5.0)
   pundit
