@@ -43,4 +43,12 @@ class UserPolicy < ApplicationPolicy
   def is_common_password?
     true
   end
+
+  def crawl_person_info?
+    true
+  end
+
+  def get_person_info?
+    true
+  end
 end

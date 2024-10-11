@@ -1,4 +1,6 @@
 require 'resolv'
+require 'net/http'
+require 'uri'
 
 class Api::V1::UsersController < ApplicationController
   before_action :set_user, only: %i[show edit update destroy]
@@ -94,8 +96,55 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def crawl_person_info
+    name = params[:name]
+    surname = params[:surname]
+    render json: { message: "Informations pour #{name} #{surname}", name: name, surname: surname }
+  end
+
+  def get_person_info
+    name = params[:name]
+    person_info = fetch_wikipedia_data(name)
+  
+    if person_info[:error].nil?
+      render json: {
+        title: person_info[:title],
+        snippet: person_info[:snippet],
+        url: person_info[:url]
+      }, status: :ok
+    else
+      render json: { error: person_info[:error] }, status: :not_found
+    end
+  end  
+
   private
 
+  def fetch_wikipedia_data(name)
+    encoded_name = URI.encode_www_form_component(name)
+    url = "https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch=#{encoded_name}&utf8=&formatversion=2"
+  
+    response = Net::HTTP.get(URI(url))
+  
+    response.force_encoding('UTF-8') if response.respond_to?(:force_encoding)
+  
+    puts "Réponse de l'API : #{response}" 
+    json_response = JSON.parse(response)
+  
+    if json_response['query'] && json_response['query']['search'].any?
+      page_info = json_response['query']['search'].first
+      {
+        title: page_info['title'],
+        snippet: ActionController::Base.helpers.strip_tags(page_info['snippet']),
+        url: "https://en.wikipedia.org/wiki/#{URI.encode_www_form_component(page_info['title'])}"
+      }
+    else
+      { error: 'Aucune information trouvée' }
+    end
+  rescue StandardError => e
+    puts "Erreur : #{e.message}" 
+    { error: e.message }
+  end  
+  
   def common_password?(password)
     common_passwords = File.readlines(Rails.root.join('lib', 'seclists', '10k-most-common.txt')).map(&:chomp)
     common_passwords.include?(password)
