@@ -39,4 +39,8 @@ class UserPolicy < ApplicationPolicy
   def check_email_existence?
     true
   end
+
+  def is_common_password?
+    true
+  end
 end

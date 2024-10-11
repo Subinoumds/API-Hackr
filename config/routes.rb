@@ -10,6 +10,7 @@ Rails.application.routes.draw do
           get :check_email_existence
           get :generate_fake_identity
           get :generate_secure_password
+          get :is_common_password
         end
       end
     end

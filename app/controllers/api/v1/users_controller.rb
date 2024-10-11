@@ -84,7 +84,22 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def is_common_password
+    password = params[:password]
+
+    if common_password?(password)
+      render json: { common: true, message: 'Le mot de passe est courant.' }
+    else
+      render json: { common: false, message: 'Le mot de passe est sécurisé.' }
+    end
+  end
+
   private
+
+  def common_password?(password)
+    common_passwords = File.readlines(Rails.root.join('lib', 'seclists', '10k-most-common.txt')).map(&:chomp)
+    common_passwords.include?(password)
+  end
 
   def valid_email_format?(email)
     /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i.match?(email)
