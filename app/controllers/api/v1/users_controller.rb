@@ -122,7 +122,38 @@ class Api::V1::UsersController < ApplicationController
     render json: { image_url: image_url }
   end  
 
+  def get_domains
+    domain = params[:domain]
+    subdomains = retrieve_subdomains(domain)
+
+    if subdomains.any?
+      render json: { subdomains: subdomains }, status: :ok
+    else
+      render json: { message: "Aucun sous-domaine trouvé." }, status: :not_found
+    end
+  end
+
   private
+
+  def retrieve_subdomains(domain)
+    api_key = 'fTRMKRxZjR6co6rNG9cotUXQ5lCBAhBL'  
+    url = URI("https://api.securitytrails.com/v1/domain/#{domain}/subdomains")
+
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Get.new(url)
+    request["APIKEY"] = api_key  
+
+    response = http.request(request)
+    data = JSON.parse(response.body)
+
+    subdomains = data['subdomains'] || []
+    subdomains.map { |subdomain| "#{subdomain}.#{domain}" } 
+  rescue => e
+    Rails.logger.error "Erreur lors de la récupération des sous-domaines: #{e.message}"
+    []
+  end
 
   def fetch_wikipedia_data(name)
     encoded_name = URI.encode_www_form_component(name)

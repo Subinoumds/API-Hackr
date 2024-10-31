@@ -18,6 +18,7 @@ Rails.application.routes.draw do
           get :crawl_person_info
           get :get_person_info
           get :random_image
+          get :get_domains
         end
       end
     end

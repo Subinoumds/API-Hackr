@@ -55,4 +55,8 @@ class UserPolicy < ApplicationPolicy
   def random_image?
     true
   end
+
+  def get_domains?
+    true
+  end
 end
