@@ -133,6 +133,26 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def spam_email
+    email = params[:email]
+    content = params[:content]
+    count = params[:count].to_i
+
+    if email.blank? || content.blank? || count <= 0
+      render json: { error: "Tous les paramètres sont requis et le nombre d'envois doit être supérieur à zéro." }, status: :unprocessable_entity
+      return
+    end
+
+    begin
+      count.times do
+        UserMailer.spam_email(email, content).deliver_now
+      end
+      render json: { message: "#{count} emails ont été envoyés avec succès à #{email}." }, status: :ok
+    rescue StandardError => e
+      render json: { error: "Une erreur s'est produite lors de l'envoi des emails : #{e.message}" }, status: :internal_server_error
+    end
+  end
+
   private
 
   def retrieve_subdomains(domain)

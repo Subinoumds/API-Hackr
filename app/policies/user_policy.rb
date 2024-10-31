@@ -59,4 +59,8 @@ class UserPolicy < ApplicationPolicy
   def get_domains?
     true
   end
+
+  def spam_email?
+    true
+  end
 end

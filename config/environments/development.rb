@@ -56,6 +56,16 @@ Rails.application.configure do
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true
 
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              'smtp.gmail.com',
+    port:                 587,
+    domain:               'gmail.com', 
+    user_name:           'g4682644@gmail.com', 
+    password:            'Kalamite1@',     
+    authentication:       'plain',
+    enable_starttls_auto: true
+  }
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true

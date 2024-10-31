@@ -19,6 +19,7 @@ Rails.application.routes.draw do
           get :get_person_info
           get :random_image
           get :get_domains
+          post :spam_email
         end
       end
     end
