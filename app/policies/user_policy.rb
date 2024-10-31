@@ -51,4 +51,8 @@ class UserPolicy < ApplicationPolicy
   def get_person_info?
     true
   end
+
+  def random_image?
+    true
+  end
 end

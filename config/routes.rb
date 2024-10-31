@@ -17,6 +17,7 @@ Rails.application.routes.draw do
           get :is_common_password
           get :crawl_person_info
           get :get_person_info
+          get :random_image
         end
       end
     end

@@ -117,6 +117,11 @@ class Api::V1::UsersController < ApplicationController
     end
   end  
 
+  def random_image
+    image_url = "https://picsum.photos/800/600"
+    render json: { image_url: image_url }
+  end  
+
   private
 
   def fetch_wikipedia_data(name)
