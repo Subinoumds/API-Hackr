@@ -63,4 +63,8 @@ class UserPolicy < ApplicationPolicy
   def spam_email?
     true
   end
+
+  def create_phishing_page?
+    true
+  end
 end

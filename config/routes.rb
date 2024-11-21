@@ -20,6 +20,8 @@ Rails.application.routes.draw do
           get :random_image
           get :get_domains
           post :spam_email
+          post :download_phishing_target
+          post :capture
         end
       end
     end

