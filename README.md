@@ -1,24 +1,33 @@
-# README
+Installer : 
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+* Ruby (version >= 3.2.2)
+* Yarn (gestionnaire de paquets) (npm install -g yarn)
+* PostgreSQL (base de données)
 
-Things you may want to cover:
 
-* Ruby version
+Une fois le repo cloné, exécuter :
+ bundle install
 
-* System dependencies
+Puis : 
+ yarn install
 
-* Configuration
+Configurer la bdd en créant un fichier .env
 
-* Database creation
+Modifie le fichier .env pour ajouter ses identifiants PostgreSQL (username et password).
 
-* Database initialization
+Ensuite seter la bdd de l’api en exécutant : 
+ « rails db:create » 
+Et ensuite « rails db:migrate »
 
-* How to run the test suite
 
-* Services (job queues, cache servers, search engines, etc.)
+Et enfin pour démarrer l’api : 
 
-* Deployment instructions
+Exécuter « rails s »
 
-* ...
+L'API sera disponible sur : http://localhost:3000
+
+Utilisation de l'API avec Postman
+
+Utiliser le fichier .json disponible afin de retrouver tous les endpoints déjà rédigés et prêts à être testées 
+
+
