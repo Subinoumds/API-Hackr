@@ -11,10 +11,6 @@ Une fois le repo cloné, exécuter :
 Puis : 
  yarn install
 
-Configurer la bdd en créant un fichier .env
-
-Modifie le fichier .env pour ajouter ses identifiants PostgreSQL (username et password).
-
 Ensuite seter la bdd de l’api en exécutant : 
  « rails db:create » 
 Et ensuite « rails db:migrate »
